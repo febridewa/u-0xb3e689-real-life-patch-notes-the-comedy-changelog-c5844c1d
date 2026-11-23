@@ -11,6 +11,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const LINE =
   "v2.7.4: fixed a bug where crossing a doorway wiped the current task from memory without saving.";
 
+// Self-check against the sealed scorer's gate: the entry must be UTF-8 text
+// of 1 to 160 characters, a single line, not only white space. Fail loudly
+// instead of writing an invalid entry.
+if (LINE.length < 1 || LINE.length > 160 || /\n/.test(LINE) || LINE.trim() === "") {
+  throw new Error(`entry violates the gate: ${LINE.length} chars`);
+}
+
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", LINE, "utf8");
 console.log(`Wrote ${LINE.length} chars to /output/entry.txt`);
